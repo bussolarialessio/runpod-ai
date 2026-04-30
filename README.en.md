@@ -1,4 +1,4 @@
-# gemma-llm
+# runpod-ai
 
 Self-hosted Gemma 4 E4B on RunPod GPU + Hetzner proxy, exposed as a private OpenAI-compatible API.
 
@@ -45,7 +45,7 @@ Hetzner 46.224.11.206
 | Runtime | vLLM (`vllm/vllm-openai:gemma4`) |
 | GPU | NVIDIA RTX A4500 20GB — RunPod community cloud |
 | Proxy | Hetzner `46.224.11.206` — Caddy 2 + FastAPI sidecar |
-| Secrets | Doppler — project `gemma-llm` |
+| Secrets | Doppler — project `runpod-ai` |
 
 ## Connection Details
 
@@ -387,7 +387,7 @@ curl https://ai.bussolarialessio.me/v1/models \
 
 ```bash
 curl -s -X POST "https://api.runpod.io/graphql" \
-  -H "Authorization: Bearer $(doppler secrets get RUNPOD_API_KEY --project gemma-llm --config prd --plain)" \
+  -H "Authorization: Bearer $(doppler secrets get RUNPOD_API_KEY --project runpod-ai --config prd --plain)" \
   -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0" \
   -d '{"query":"{myself{pods{id name desiredStatus runtime{uptimeInSeconds}}}}"}' \
   | python3 -m json.tool
@@ -408,13 +408,13 @@ ssh hetzner-proxy "cd /opt/gemma && \
   docker compose up -d vllm-proxy"
 
 for cfg in dev stg prd; do
-  doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project gemma-llm --config $cfg
+  doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project runpod-ai --config $cfg
 done
 ```
 
 ---
 
-## Secrets — Doppler project `gemma-llm`
+## Secrets — Doppler project `runpod-ai`
 
 | Key | Description |
 |---|---|

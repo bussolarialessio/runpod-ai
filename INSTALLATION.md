@@ -7,7 +7,7 @@ Procedura completa per deployare il pod RunPod con gemma-4-E4B + bge-m3 e il pro
 | Requisito | Note |
 |---|---|
 | Account RunPod | Con metodo di pagamento attivo |
-| Account Doppler | Progetto `gemma-llm` già configurato |
+| Account Doppler | Progetto `runpod-ai` già configurato |
 | VPS Hetzner | `46.224.11.206` — Ubuntu, Docker installato |
 | Account HuggingFace | Con accesso approvato a `google/gemma-4-E4B-it` (modello gated) |
 | DNS record | `ai.bussolarialessio.me A 46.224.11.206` |
@@ -50,8 +50,8 @@ ghcr.io/bussolarialessio/runpod-ai:main
 
 **Environment variables:**
 ```
-VLLM_API_KEY=<da Doppler: gemma-llm/prd VLLM_API_KEY>
-HF_TOKEN=<da Doppler: gemma-llm/prd HF_TOKEN>
+VLLM_API_KEY=<da Doppler: runpod-ai/prd VLLM_API_KEY>
+HF_TOKEN=<da Doppler: runpod-ai/prd HF_TOKEN>
 HF_HOME=/workspace/.huggingface
 ```
 
@@ -62,7 +62,7 @@ HF_HOME=/workspace/.huggingface
 ```bash
 NEW_POD_ID="<pod id copiato>"
 for CFG in dev stg prd; do
-  doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project gemma-llm --config $CFG
+  doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project runpod-ai --config $CFG
 done
 ```
 
@@ -212,7 +212,7 @@ EOF
 ### .env da Doppler
 
 ```bash
-doppler secrets download --no-file --format env --project gemma-llm --config prd > /opt/gemma/.env
+doppler secrets download --no-file --format env --project runpod-ai --config prd > /opt/gemma/.env
 echo "CLIENT_API_KEY=$(grep GEMMA_API_KEY /opt/gemma/.env | cut -d= -f2)" >> /opt/gemma/.env
 echo "PROXY_SECRET=$(openssl rand -hex 16)" >> /opt/gemma/.env
 ```
@@ -228,7 +228,7 @@ cd /opt/gemma && docker compose up -d --build
 ## Step 4 — Verifica
 
 ```bash
-GEMMA_API_KEY=$(doppler secrets get GEMMA_API_KEY --project gemma-llm --config prd --plain)
+GEMMA_API_KEY=$(doppler secrets get GEMMA_API_KEY --project runpod-ai --config prd --plain)
 
 # Modelli
 curl https://ai.bussolarialessio.me/v1/models -H "Authorization: Bearer $GEMMA_API_KEY"
@@ -254,7 +254,7 @@ ssh hetzner-proxy "cd /opt/gemma && \
   sed -i 's|RUNPOD_POD_ID=.*|RUNPOD_POD_ID=${NEW_POD_ID}|' .env && \
   docker compose up -d vllm-proxy"
 for CFG in dev stg prd; do
-  doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project gemma-llm --config $CFG
+  doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project runpod-ai --config $CFG
 done
 ```
 

@@ -50,10 +50,10 @@ Hetzner 46.224.11.206
               └── vLLM BAAI/bge-m3 :8002
 ```
 
-## ENV — Doppler progetto `gemma-llm`
+## ENV — Doppler progetto `runpod-ai`
 
 ```bash
-doppler secrets download --no-file --format env --project gemma-llm --config prd > .env
+doppler secrets download --no-file --format env --project runpod-ai --config prd > .env
 ```
 
 | Variabile | Descrizione |
@@ -103,7 +103,7 @@ ssh hetzner-proxy 'cd /opt/gemma && docker compose logs -f vllm-proxy'
 
 # Stato pod RunPod
 curl -s -X POST "https://api.runpod.io/graphql" \
-  -H "Authorization: Bearer $(doppler secrets get RUNPOD_API_KEY --project gemma-llm --config prd --plain)" \
+  -H "Authorization: Bearer $(doppler secrets get RUNPOD_API_KEY --project runpod-ai --config prd --plain)" \
   -H "Content-Type: application/json" -H "User-Agent: Mozilla/5.0" \
   -d '{"query":"{myself{pods{id name desiredStatus runtime{uptimeInSeconds}}}}"}' \
   | python3 -m json.tool
@@ -111,5 +111,5 @@ curl -s -X POST "https://api.runpod.io/graphql" \
 # Aggiorna proxy dopo cambio pod
 NEW_POD_ID="..."
 ssh hetzner-proxy "cd /opt/gemma && sed -i 's|RUNPOD_POD_ID=.*|RUNPOD_POD_ID=${NEW_POD_ID}|' .env && docker compose up -d vllm-proxy"
-for cfg in dev stg prd; do doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project gemma-llm --config $cfg; done
+for cfg in dev stg prd; do doppler secrets set RUNPOD_POD_ID="${NEW_POD_ID}" --project runpod-ai --config $cfg; done
 ```

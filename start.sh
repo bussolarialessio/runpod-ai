@@ -52,3 +52,5 @@ nginx
 
 echo "[runpod-ai] All services up. gemma=8001, bge-m3=8002, nginx=8000"
 wait -n $GEMMA_PID $EMBED_PID
+echo "[runpod-ai] ERROR: a vLLM process exited unexpectedly — restarting container"
+exit 1

@@ -2,7 +2,7 @@
 set -e
 
 echo "[runpod-ai] Starting gemma-4-E4B on port 8001..."
-python -m vllm.entrypoints.openai.api_server \
+python3 -m vllm.entrypoints.openai.api_server \
   --model google/gemma-4-E4B-it \
   --max-model-len 8192 \
   --gpu-memory-utilization 0.80 \
@@ -25,7 +25,7 @@ done
 echo "[runpod-ai] gemma-4-E4B ready."
 
 echo "[runpod-ai] Starting BAAI/bge-m3 on port 8002..."
-python -m vllm.entrypoints.openai.api_server \
+python3 -m vllm.entrypoints.openai.api_server \
   --model BAAI/bge-m3 \
   --task embed \
   --gpu-memory-utilization 0.10 \

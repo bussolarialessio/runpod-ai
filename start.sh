@@ -5,14 +5,19 @@ set -e
 VLLM_API_KEY="${VLLM_API_KEY//\"/}"
 HF_TOKEN="${HF_TOKEN//\"/}"
 
-echo "[runpod-ai] Starting gemma-4-E4B on port 8000..."
+echo "[runpod-ai] Starting gemma-4-26B-A4B-it on port 8000..."
 exec python3 -m vllm.entrypoints.openai.api_server \
-  --model google/gemma-4-E4B-it \
-  --max-model-len 8192 \
-  --gpu-memory-utilization 0.95 \
-  --dtype bfloat16 \
-  --enforce-eager \
-  --served-model-name gemma-4-E4B \
+  --model google/gemma-4-26B-A4B-it \
+  --max-model-len 40000 \
+  --kv-cache-dtype fp8 \
+  --gpu-memory-utilization 0.85 \
+  --enable-auto-tool-choice \
+  --reasoning-parser gemma4 \
+  --default-chat-template-kwargs '{"enable_thinking": true}' \
+  --tool-call-parser gemma4 \
+  --async-scheduling \
+  --language-model-only \
+  --served-model-name gemma-4-26B-A4B \
   --api-key "${VLLM_API_KEY}" \
   --download-dir /workspace/.huggingface \
   --host 0.0.0.0 \

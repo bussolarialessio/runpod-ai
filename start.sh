@@ -31,7 +31,7 @@ echo "[runpod-ai] gemma-4-E4B ready."
 echo "[runpod-ai] Starting BAAI/bge-m3 on port 8002..."
 python3 -m vllm.entrypoints.openai.api_server \
   --model BAAI/bge-m3 \
-  --task embed \
+  --runner pooling \
   --gpu-memory-utilization 0.10 \
   --dtype bfloat16 \
   --enforce-eager \
